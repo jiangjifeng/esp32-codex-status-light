@@ -45,11 +45,25 @@ command to the lamp.
 
 ## Global Codex Hooks
 
-Global hooks are installed in:
+Install the hook entries into your global Codex config:
+
+```powershell
+.\scripts\install_codex_hooks.ps1 -Port COM6
+```
+
+The installer backs up an existing `hooks.json`, preserves unrelated hooks, and
+adds or replaces only the status-light entries. The generated global config is
+written to:
 
 ```text
 %USERPROFILE%\.codex\hooks.json
-%USERPROFILE%\.codex\hooks\codex_status_light_hook.ps1
+```
+
+The committed hook template lives at:
+
+```text
+hooks\codex_status_light_hook.ps1
+hooks\hooks.example.json
 ```
 
 Hook mapping:

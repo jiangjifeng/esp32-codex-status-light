@@ -35,3 +35,9 @@ Send status updates from Windows:
 ```
 
 More wiring notes and Codex hook setup details are in [STATUS_LIGHT.md](STATUS_LIGHT.md).
+
+Install Codex hooks for automatic status updates:
+
+```powershell
+.\scripts\install_codex_hooks.ps1 -Port COM6
+```
