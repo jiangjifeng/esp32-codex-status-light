@@ -41,3 +41,6 @@ Install Codex hooks for automatic status updates:
 ```powershell
 .\scripts\install_codex_hooks.ps1 -Port COM6
 ```
+
+When a Codex goal is active, the `Stop` hook keeps the lamp in `running`
+instead of switching to `done` between automatic continuations.

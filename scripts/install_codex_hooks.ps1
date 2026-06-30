@@ -58,7 +58,7 @@ function New-StatusLightHook {
         command = $command
         commandWindows = $command
         timeout = 5
-        statusMessage = "Setting Codex status light to $Status"
+        statusMessage = $(if ($Status -eq "stop") { "Updating Codex status light after turn" } else { "Setting Codex status light to $Status" })
     }
 }
 
@@ -101,8 +101,9 @@ function Set-CodexEventHook {
 
 Set-CodexEventHook -EventName "SessionStart" -Status "idle" -Matcher "startup|resume|clear"
 Set-CodexEventHook -EventName "UserPromptSubmit" -Status "running"
+Set-CodexEventHook -EventName "PostToolUse" -Status "running" -Matcher ".*"
 Set-CodexEventHook -EventName "PermissionRequest" -Status "permission" -Matcher ".*"
-Set-CodexEventHook -EventName "Stop" -Status "done"
+Set-CodexEventHook -EventName "Stop" -Status "stop"
 
 $config | ConvertTo-Json -Depth 30 | Set-Content -LiteralPath $hooksJson -Encoding UTF8
 

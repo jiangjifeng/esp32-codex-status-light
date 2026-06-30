@@ -72,11 +72,18 @@ Hook mapping:
 | --- | --- |
 | `SessionStart` | `idle` |
 | `UserPromptSubmit` | `running` |
+| `PostToolUse` | `running` |
 | `PermissionRequest` | `permission` |
-| `Stop` | `done` |
+| `Stop` | `running` if a Codex goal is still active, otherwise `done` |
 
 Restart Codex after changing hooks. The first time Codex sees these command
 hooks, run `/hooks` and trust them.
+
+The hook writes a small diagnostic log to:
+
+```text
+%TEMP%\codex_status_light_hook.log
+```
 
 ## GPIO Mapping
 
