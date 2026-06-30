@@ -15,7 +15,7 @@ Traffic-light module wiring:
 | --- | --- | --- | --- |
 | Needs your permission | `permission` | red fast blink | Go approve or deny the request |
 | Error / blocked | `error` | red slow blink | Something failed; go inspect it |
-| Working | `running` | yellow blink | AI is thinking or editing |
+| Working | `running` | green/yellow/red chase | AI is thinking or editing |
 | Finished | `done` | green solid | Work is done |
 | Idle | `idle` | green slow blink | Waiting for your next instruction |
 | Off | `off` | all off | Disabled / no signal |
@@ -33,6 +33,8 @@ idf.py -p COM6 flash
 .\codex_status_light.ps1 idle
 .\codex_status_light.ps1 done
 .\codex_status_light.ps1 running
+.\codex_status_light.ps1 marquee
+.\codex_status_light.ps1 chase
 .\codex_status_light.ps1 permission
 .\codex_status_light.ps1 error
 .\codex_status_light.ps1 off

@@ -27,6 +27,8 @@ Send status updates from Windows:
 ```powershell
 .\codex_status_light.ps1 idle
 .\codex_status_light.ps1 running
+.\codex_status_light.ps1 marquee
+.\codex_status_light.ps1 chase
 .\codex_status_light.ps1 permission
 .\codex_status_light.ps1 done
 .\codex_status_light.ps1 error

@@ -77,7 +77,7 @@ static void configure_gpio(void)
 static void print_help(void)
 {
     printf("\nCodex status light commands:\n");
-    printf("  running | busy | yellow      -> yellow blinking, AI is working\n");
+    printf("  running | busy | chase       -> green/yellow/red chase, AI is working\n");
     printf("  permission | approval | auth -> red fast blink, go approve/deny\n");
     printf("  done | complete | green      -> green on, work finished\n");
     printf("  idle | ready                 -> green slow blink, waiting for command\n");
@@ -109,7 +109,9 @@ static void handle_command(char *command)
         printf("status=done\n");
     } else if (strcmp(command, "running") == 0 || strcmp(command, "run") == 0 ||
                strcmp(command, "busy") == 0 || strcmp(command, "thinking") == 0 ||
-               strcmp(command, "yellow") == 0 || strcmp(command, "y") == 0) {
+               strcmp(command, "progress") == 0 || strcmp(command, "marquee") == 0 ||
+               strcmp(command, "chase") == 0 || strcmp(command, "yellow") == 0 ||
+               strcmp(command, "y") == 0) {
         s_status = STATUS_RUNNING;
         printf("status=running\n");
     } else if (strcmp(command, "permission") == 0 || strcmp(command, "approval") == 0 ||
@@ -140,6 +142,7 @@ static void status_render_task(void *arg)
 {
     (void)arg;
     bool blink_on = false;
+    size_t chase_step = 0;
 
     while (true) {
         switch (s_status) {
@@ -153,9 +156,23 @@ static void status_render_task(void *arg)
             vTaskDelay(pdMS_TO_TICKS(200));
             break;
         case STATUS_RUNNING:
-            blink_on = !blink_on;
-            set_lights(0, blink_on, 0);
-            vTaskDelay(pdMS_TO_TICKS(450));
+            switch (chase_step % 4) {
+            case 0:
+                set_lights(1, 0, 0);
+                break;
+            case 1:
+                set_lights(0, 1, 0);
+                break;
+            case 2:
+                set_lights(0, 0, 1);
+                break;
+            default:
+                set_lights(0, 1, 0);
+                break;
+            }
+
+            chase_step++;
+            vTaskDelay(pdMS_TO_TICKS(180));
             break;
         case STATUS_PERMISSION:
             blink_on = !blink_on;
