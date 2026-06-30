@@ -1,0 +1,33 @@
+# ESP-IDF build outputs
+build/
+*/build/
+managed_components/
+dependencies.lock
+
+# Generated compile/database files
+compile_commands.json
+*.map
+*.elf
+*.bin
+
+# ESP-IDF local config variants and logs
+sdkconfig.old
+sdkconfig.defaults.old
+log/
+*.log
+
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Editor and OS files
+.vscode/
+.idea/
+*.swp
+*.swo
+Thumbs.db
+Desktop.ini
+.DS_Store
