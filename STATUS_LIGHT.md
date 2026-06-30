@@ -67,7 +67,7 @@ hooks, run `/hooks` and trust them.
 ## GPIO Mapping
 
 If the wrong lamp turns on, update these macros in
-`hello_world/main/hello_world_main.c`:
+`codex_status_light/main/codex_status_light_main.c`:
 
 ```c
 #define GREEN_LED_GPIO GPIO_NUM_5

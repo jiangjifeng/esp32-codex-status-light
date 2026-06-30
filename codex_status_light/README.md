@@ -23,4 +23,4 @@ idf.py -p COM6 flash
 | Red | GPIO7 |
 
 If your board maps the D5, D6, or D7 labels differently, update the GPIO macros
-in [main/hello_world_main.c](main/hello_world_main.c).
+in [main/codex_status_light_main.c](main/codex_status_light_main.c).
