@@ -105,7 +105,9 @@ Set-CodexEventHook -EventName "PostToolUse" -Status "running" -Matcher ".*"
 Set-CodexEventHook -EventName "PermissionRequest" -Status "permission" -Matcher ".*"
 Set-CodexEventHook -EventName "Stop" -Status "stop"
 
-$config | ConvertTo-Json -Depth 30 | Set-Content -LiteralPath $hooksJson -Encoding UTF8
+$json = $config | ConvertTo-Json -Depth 30
+$utf8NoBom = [System.Text.UTF8Encoding]::new($false)
+[System.IO.File]::WriteAllText($hooksJson, $json + [Environment]::NewLine, $utf8NoBom)
 
 Write-Host "Installed Codex status light hooks:"
 Write-Host "  $hooksJson"
