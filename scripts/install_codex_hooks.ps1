@@ -100,8 +100,9 @@ function Set-CodexEventHook {
 }
 
 Set-CodexEventHook -EventName "SessionStart" -Status "idle" -Matcher "startup|resume|clear"
-Set-CodexEventHook -EventName "UserPromptSubmit" -Status "running"
-Set-CodexEventHook -EventName "PostToolUse" -Status "running" -Matcher ".*"
+Set-CodexEventHook -EventName "UserPromptSubmit" -Status "thinking"
+Set-CodexEventHook -EventName "PreToolUse" -Status "tool" -Matcher ".*"
+Set-CodexEventHook -EventName "PostToolUse" -Status "thinking" -Matcher ".*"
 Set-CodexEventHook -EventName "PermissionRequest" -Status "permission" -Matcher ".*"
 Set-CodexEventHook -EventName "Stop" -Status "stop"
 

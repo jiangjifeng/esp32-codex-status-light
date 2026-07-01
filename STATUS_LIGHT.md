@@ -13,10 +13,14 @@ Traffic-light module wiring:
 
 | AI status | Command | Light effect | Meaning |
 | --- | --- | --- | --- |
+| Thinking | `thinking` | yellow slow blink | AI is reasoning before acting |
+| Tool call | `tool` | yellow fast blink | A tool or command is running |
+| File edit | `editing` | green/yellow chase | Files are being changed |
+| Git operation | `git` | green+yellow blink | Git or GitHub operation |
 | Needs your permission | `permission` | red fast blink | Go approve or deny the request |
 | Usage / budget limited | `limited` | yellow/red alternating | Wait for quota reset, upgrade, or recharge |
 | Error / blocked | `error` | red slow blink | Something failed; go inspect it |
-| Working | `running` | green/yellow/red chase | AI is thinking or editing |
+| Goal progress | `running` | green/yellow/red chase | A long-running goal is progressing |
 | Finished | `done` | green solid | Work is done |
 | Idle | `idle` | green slow blink | Waiting for your next instruction |
 | Off | `off` | all off | Disabled / no signal |
@@ -33,6 +37,10 @@ idf.py -p COM6 flash
 ```powershell
 .\codex_status_light.ps1 idle
 .\codex_status_light.ps1 done
+.\codex_status_light.ps1 thinking
+.\codex_status_light.ps1 tool
+.\codex_status_light.ps1 editing
+.\codex_status_light.ps1 git
 .\codex_status_light.ps1 running
 .\codex_status_light.ps1 marquee
 .\codex_status_light.ps1 chase
@@ -75,10 +83,14 @@ Hook mapping:
 | Codex event | Lamp command |
 | --- | --- |
 | `SessionStart` | `idle` |
-| `UserPromptSubmit` | `running` |
-| `PostToolUse` | `running` |
+| `UserPromptSubmit` | `thinking` |
+| `PreToolUse` | `tool`, auto-classified to `editing` / `git` when possible |
+| `PostToolUse` | `thinking` |
 | `PermissionRequest` | `permission` |
-| `Stop` | `running` if active, `limited` if usage/budget limited, otherwise `done` |
+| `Stop` | `thinking` if active, `limited` if usage/budget limited, otherwise `done` |
+
+Git classification depends on hook input containing command text. If that
+context is unavailable, the hook uses the generic `tool` command.
 
 Restart Codex after changing hooks. The first time Codex sees these command
 hooks, run `/hooks` and trust them.

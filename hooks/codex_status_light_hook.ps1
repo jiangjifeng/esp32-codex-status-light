@@ -1,5 +1,5 @@
 param(
-    [ValidateSet("idle", "done", "running", "permission", "limited", "error", "off", "stop")]
+    [ValidateSet("idle", "thinking", "tool", "editing", "git", "done", "running", "permission", "limited", "error", "off", "stop")]
     [string]$Status = "idle",
 
     [string]$SenderScript = (Join-Path (Split-Path $PSScriptRoot -Parent) "codex_status_light.ps1"),
@@ -68,6 +68,35 @@ except Exception:
     return "unknown"
 }
 
+function Read-HookInput {
+    if (-not [Console]::IsInputRedirected) {
+        return ""
+    }
+
+    return [Console]::In.ReadToEnd()
+}
+
+function Resolve-ToolStatus {
+    param(
+        [string]$RawInput
+    )
+
+    if (-not $RawInput) {
+        return "tool"
+    }
+
+    if ($RawInput -match "(?i)(^|[\s`"'])git\s+(status|add|commit|push|pull|fetch|merge|rebase|checkout|switch|branch|tag|diff|show|log|restore|reset|remote|clone)\b" -or
+        $RawInput -match "(?i)(^|[\s`"'])gh\s+(pr|repo|issue|auth|run|workflow)\b") {
+        return "git"
+    }
+
+    if ($RawInput -match "(?i)apply_patch|`"Edit`"|`"Write`"|Move-Item|Remove-Item|Set-Content|Add-Content|New-Item|git\s+mv") {
+        return "editing"
+    }
+
+    return "tool"
+}
+
 if (-not (Test-Path -LiteralPath $SenderScript)) {
     Write-HookLog "sender missing: $SenderScript"
     exit 0
@@ -75,11 +104,15 @@ if (-not (Test-Path -LiteralPath $SenderScript)) {
 
 $targetStatus = $Status
 
-if ($Status -eq "stop") {
+if ($Status -eq "tool") {
+    $hookInput = Read-HookInput
+    $targetStatus = Resolve-ToolStatus -RawInput $hookInput
+    Write-HookLog "tool event: target_status=$targetStatus input_length=$($hookInput.Length)"
+} elseif ($Status -eq "stop") {
     $goalStatus = Get-LatestGoalStatus
 
     switch ($goalStatus) {
-        "active" { $targetStatus = "running" }
+        "active" { $targetStatus = "thinking" }
         "blocked" { $targetStatus = "error" }
         "budget_limited" { $targetStatus = "limited" }
         "usage_limited" { $targetStatus = "limited" }

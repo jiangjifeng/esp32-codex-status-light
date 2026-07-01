@@ -25,6 +25,10 @@
 
 typedef enum {
     STATUS_IDLE,
+    STATUS_THINKING,
+    STATUS_TOOL,
+    STATUS_EDITING,
+    STATUS_GIT,
     STATUS_DONE,
     STATUS_RUNNING,
     STATUS_PERMISSION,
@@ -78,7 +82,11 @@ static void configure_gpio(void)
 static void print_help(void)
 {
     printf("\nCodex status light commands:\n");
-    printf("  running | busy | chase       -> green/yellow/red chase, AI is working\n");
+    printf("  thinking                     -> yellow slow blink, AI is reasoning\n");
+    printf("  tool                         -> yellow fast blink, tool is running\n");
+    printf("  editing                      -> green/yellow chase, files are changing\n");
+    printf("  git                          -> green+yellow blink, git or GitHub operation\n");
+    printf("  running | busy | chase       -> green/yellow/red chase, goal is progressing\n");
     printf("  permission | approval | auth -> red fast blink, go approve/deny\n");
     printf("  limited | quota              -> yellow/red alternating, usage limited\n");
     printf("  done | complete | green      -> green on, work finished\n");
@@ -104,6 +112,22 @@ static void handle_command(char *command)
         strcmp(command, "waiting") == 0) {
         s_status = STATUS_IDLE;
         printf("status=idle\n");
+    } else if (strcmp(command, "thinking") == 0 || strcmp(command, "think") == 0 ||
+               strcmp(command, "reasoning") == 0) {
+        s_status = STATUS_THINKING;
+        printf("status=thinking\n");
+    } else if (strcmp(command, "tool") == 0 || strcmp(command, "tools") == 0 ||
+               strcmp(command, "command") == 0 || strcmp(command, "shell") == 0) {
+        s_status = STATUS_TOOL;
+        printf("status=tool\n");
+    } else if (strcmp(command, "editing") == 0 || strcmp(command, "edit") == 0 ||
+               strcmp(command, "write") == 0 || strcmp(command, "writing") == 0) {
+        s_status = STATUS_EDITING;
+        printf("status=editing\n");
+    } else if (strcmp(command, "git") == 0 || strcmp(command, "github") == 0 ||
+               strcmp(command, "commit") == 0 || strcmp(command, "push") == 0) {
+        s_status = STATUS_GIT;
+        printf("status=git\n");
     } else if (strcmp(command, "done") == 0 || strcmp(command, "complete") == 0 ||
                strcmp(command, "completed") == 0 || strcmp(command, "finished") == 0 ||
                strcmp(command, "green") == 0 || strcmp(command, "g") == 0) {
@@ -157,6 +181,37 @@ static void status_render_task(void *arg)
             blink_on = !blink_on;
             set_lights(blink_on, 0, 0);
             vTaskDelay(pdMS_TO_TICKS(blink_on ? 120 : 1880));
+            break;
+        case STATUS_THINKING:
+            blink_on = !blink_on;
+            set_lights(0, blink_on, 0);
+            vTaskDelay(pdMS_TO_TICKS(650));
+            break;
+        case STATUS_TOOL:
+            blink_on = !blink_on;
+            set_lights(0, blink_on, 0);
+            vTaskDelay(pdMS_TO_TICKS(160));
+            break;
+        case STATUS_EDITING:
+            switch (chase_step % 3) {
+            case 0:
+                set_lights(1, 0, 0);
+                break;
+            case 1:
+                set_lights(0, 1, 0);
+                break;
+            default:
+                set_lights(0, 0, 0);
+                break;
+            }
+
+            chase_step++;
+            vTaskDelay(pdMS_TO_TICKS(180));
+            break;
+        case STATUS_GIT:
+            blink_on = !blink_on;
+            set_lights(blink_on, blink_on, 0);
+            vTaskDelay(pdMS_TO_TICKS(220));
             break;
         case STATUS_DONE:
             set_lights(1, 0, 0);
