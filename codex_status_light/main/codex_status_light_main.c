@@ -172,7 +172,7 @@ static void status_render_task(void *arg)
             }
 
             chase_step++;
-            vTaskDelay(pdMS_TO_TICKS(180));
+            vTaskDelay(pdMS_TO_TICKS(500));
             break;
         case STATUS_PERMISSION:
             blink_on = !blink_on;
