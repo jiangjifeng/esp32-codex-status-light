@@ -1,5 +1,5 @@
 param(
-    [ValidateSet("idle", "done", "running", "permission", "error", "off", "stop")]
+    [ValidateSet("idle", "done", "running", "permission", "limited", "error", "off", "stop")]
     [string]$Status = "idle",
 
     [string]$SenderScript = (Join-Path (Split-Path $PSScriptRoot -Parent) "codex_status_light.ps1"),
@@ -81,8 +81,8 @@ if ($Status -eq "stop") {
     switch ($goalStatus) {
         "active" { $targetStatus = "running" }
         "blocked" { $targetStatus = "error" }
-        "budget_limited" { $targetStatus = "error" }
-        "usage_limited" { $targetStatus = "error" }
+        "budget_limited" { $targetStatus = "limited" }
+        "usage_limited" { $targetStatus = "limited" }
         "paused" { $targetStatus = "idle" }
         default { $targetStatus = "done" }
     }

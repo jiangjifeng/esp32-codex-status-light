@@ -28,6 +28,7 @@ typedef enum {
     STATUS_DONE,
     STATUS_RUNNING,
     STATUS_PERMISSION,
+    STATUS_LIMITED,
     STATUS_ERROR,
     STATUS_OFF,
 } codex_status_t;
@@ -79,6 +80,7 @@ static void print_help(void)
     printf("\nCodex status light commands:\n");
     printf("  running | busy | chase       -> green/yellow/red chase, AI is working\n");
     printf("  permission | approval | auth -> red fast blink, go approve/deny\n");
+    printf("  limited | quota              -> yellow/red alternating, usage limited\n");
     printf("  done | complete | green      -> green on, work finished\n");
     printf("  idle | ready                 -> green slow blink, waiting for command\n");
     printf("  error | blocked              -> red slow blink, needs attention\n");
@@ -119,6 +121,11 @@ static void handle_command(char *command)
                strcmp(command, "authorize") == 0 || strcmp(command, "needs_permission") == 0) {
         s_status = STATUS_PERMISSION;
         printf("status=permission\n");
+    } else if (strcmp(command, "limited") == 0 || strcmp(command, "limit") == 0 ||
+               strcmp(command, "quota") == 0 || strcmp(command, "rate_limit") == 0 ||
+               strcmp(command, "usage_limited") == 0 || strcmp(command, "budget_limited") == 0) {
+        s_status = STATUS_LIMITED;
+        printf("status=limited\n");
     } else if (strcmp(command, "error") == 0 || strcmp(command, "blocked") == 0 ||
                strcmp(command, "failed") == 0 || strcmp(command, "attention") == 0 ||
                strcmp(command, "red") == 0 || strcmp(command, "r") == 0) {
@@ -178,6 +185,11 @@ static void status_render_task(void *arg)
             blink_on = !blink_on;
             set_lights(0, 0, blink_on);
             vTaskDelay(pdMS_TO_TICKS(150));
+            break;
+        case STATUS_LIMITED:
+            blink_on = !blink_on;
+            set_lights(0, blink_on, !blink_on);
+            vTaskDelay(pdMS_TO_TICKS(500));
             break;
         case STATUS_ERROR:
             blink_on = !blink_on;

@@ -1,5 +1,5 @@
 param(
-    [ValidateSet("idle", "done", "running", "marquee", "chase", "permission", "error", "off", "test", "help")]
+    [ValidateSet("idle", "done", "running", "marquee", "chase", "permission", "limited", "error", "off", "test", "help")]
     [string]$Status = "idle",
 
     [string]$Port = "COM6",

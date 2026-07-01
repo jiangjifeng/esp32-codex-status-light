@@ -11,6 +11,7 @@ An ESP32-S3 traffic-light status lamp for Codex or other desktop tools. The firm
 | `idle` | green slow blink / 绿灯慢闪 | Waiting for the next instruction / 等待下一条指令 |
 | `running` | green/yellow/red chase / 绿黄红跑马灯 | Codex is thinking, editing, or continuing a goal / Codex 正在思考、编辑或继续执行目标 |
 | `permission` | red fast blink / 红灯快闪 | Codex needs approval / Codex 需要你授权 |
+| `limited` | yellow/red alternating / 黄红交替 | Usage, quota, or budget limit reached / 达到使用、额度或预算限制 |
 | `done` | green solid / 绿灯常亮 | Work is finished / 工作已完成 |
 | `error` | red slow blink / 红灯慢闪 | Something is blocked or failed / 出现阻塞或失败 |
 | `off` | all off / 全部关闭 | Disabled / 关闭状态灯 |
@@ -100,6 +101,7 @@ After flashing, send commands from the repo root:
 .\codex_status_light.ps1 test -Port COM6
 .\codex_status_light.ps1 running -Port COM6
 .\codex_status_light.ps1 permission -Port COM6
+.\codex_status_light.ps1 limited -Port COM6
 .\codex_status_light.ps1 done -Port COM6
 .\codex_status_light.ps1 idle -Port COM6
 ```
@@ -147,7 +149,7 @@ Then trust the new or changed command hooks.
 | `UserPromptSubmit` | `running` |
 | `PostToolUse` | `running` |
 | `PermissionRequest` | `permission` |
-| `Stop` | keeps `running` while a Codex goal is active, otherwise `done` / 如果 Codex 目标仍在执行则保持 `running`，否则切到 `done` |
+| `Stop` | keeps `running` while active, sends `limited` for usage/budget limits, otherwise `done` / 如果目标仍在执行则保持 `running`，达到使用/预算限制时发送 `limited`，否则切到 `done` |
 
 hook 诊断日志写入：
 

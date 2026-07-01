@@ -14,6 +14,7 @@ Traffic-light module wiring:
 | AI status | Command | Light effect | Meaning |
 | --- | --- | --- | --- |
 | Needs your permission | `permission` | red fast blink | Go approve or deny the request |
+| Usage / budget limited | `limited` | yellow/red alternating | Wait for quota reset, upgrade, or recharge |
 | Error / blocked | `error` | red slow blink | Something failed; go inspect it |
 | Working | `running` | green/yellow/red chase | AI is thinking or editing |
 | Finished | `done` | green solid | Work is done |
@@ -36,6 +37,7 @@ idf.py -p COM6 flash
 .\codex_status_light.ps1 marquee
 .\codex_status_light.ps1 chase
 .\codex_status_light.ps1 permission
+.\codex_status_light.ps1 limited
 .\codex_status_light.ps1 error
 .\codex_status_light.ps1 off
 .\codex_status_light.ps1 test
@@ -76,7 +78,7 @@ Hook mapping:
 | `UserPromptSubmit` | `running` |
 | `PostToolUse` | `running` |
 | `PermissionRequest` | `permission` |
-| `Stop` | `running` if a Codex goal is still active, otherwise `done` |
+| `Stop` | `running` if active, `limited` if usage/budget limited, otherwise `done` |
 
 Restart Codex after changing hooks. The first time Codex sees these command
 hooks, run `/hooks` and trust them.
