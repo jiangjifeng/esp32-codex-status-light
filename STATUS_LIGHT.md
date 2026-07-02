@@ -15,7 +15,6 @@ Traffic-light module wiring:
 | --- | --- | --- | --- |
 | Thinking | `thinking` | yellow slow blink | AI is reasoning before acting |
 | Tool call | `tool` | yellow fast blink | A tool or command is running |
-| File edit | `editing` | green/yellow chase | Files are being changed |
 | Git operation | `git` | green+yellow blink | Git or GitHub operation |
 | Needs your permission | `permission` | red fast blink | Go approve or deny the request |
 | Usage / budget limited | `limited` | yellow/red alternating | Wait for quota reset, upgrade, or recharge |
@@ -39,7 +38,6 @@ idf.py -p COM6 flash
 .\codex_status_light.ps1 done
 .\codex_status_light.ps1 thinking
 .\codex_status_light.ps1 tool
-.\codex_status_light.ps1 editing
 .\codex_status_light.ps1 git
 .\codex_status_light.ps1 running
 .\codex_status_light.ps1 marquee
@@ -84,13 +82,16 @@ Hook mapping:
 | --- | --- |
 | `SessionStart` | `idle` |
 | `UserPromptSubmit` | `thinking` |
-| `PreToolUse` | `tool`, auto-classified to `editing` / `git` when possible |
+| `PreToolUse` | `tool`, auto-classified to `git` when possible |
 | `PostToolUse` | `thinking` |
 | `PermissionRequest` | `permission` |
-| `Stop` | `thinking` if active, `limited` if usage/budget limited, otherwise `done` |
+| `Stop` | `running` if active, `limited` if usage/budget limited, otherwise `done` |
 
 Git classification depends on hook input containing command text. If that
 context is unavailable, the hook uses the generic `tool` command.
+
+`editing`, `edit`, and `write` are still accepted as compatibility aliases, but
+they intentionally use the generic `tool` effect.
 
 Restart Codex after changing hooks. The first time Codex sees these command
 hooks, run `/hooks` and trust them.

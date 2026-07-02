@@ -1,5 +1,5 @@
 param(
-    [ValidateSet("idle", "thinking", "tool", "editing", "git", "done", "running", "permission", "limited", "error", "off", "stop")]
+    [ValidateSet("idle", "thinking", "tool", "git", "done", "running", "permission", "limited", "error", "off", "stop")]
     [string]$Status = "idle",
 
     [string]$SenderScript = (Join-Path (Split-Path $PSScriptRoot -Parent) "codex_status_light.ps1"),
@@ -85,13 +85,9 @@ function Resolve-ToolStatus {
         return "tool"
     }
 
-    if ($RawInput -match "(?i)(^|[\s`"'])git\s+(status|add|commit|push|pull|fetch|merge|rebase|checkout|switch|branch|tag|diff|show|log|restore|reset|remote|clone)\b" -or
+    if ($RawInput -match "(?i)(^|[\s`"'])git\s+(status|add|commit|push|pull|fetch|merge|rebase|checkout|switch|branch|tag|diff|show|log|restore|reset|remote|clone|mv)\b" -or
         $RawInput -match "(?i)(^|[\s`"'])gh\s+(pr|repo|issue|auth|run|workflow)\b") {
         return "git"
-    }
-
-    if ($RawInput -match "(?i)apply_patch|`"Edit`"|`"Write`"|Move-Item|Remove-Item|Set-Content|Add-Content|New-Item|git\s+mv") {
-        return "editing"
     }
 
     return "tool"
@@ -112,7 +108,7 @@ if ($Status -eq "tool") {
     $goalStatus = Get-LatestGoalStatus
 
     switch ($goalStatus) {
-        "active" { $targetStatus = "thinking" }
+        "active" { $targetStatus = "running" }
         "blocked" { $targetStatus = "error" }
         "budget_limited" { $targetStatus = "limited" }
         "usage_limited" { $targetStatus = "limited" }

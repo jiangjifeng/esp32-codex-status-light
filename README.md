@@ -11,7 +11,6 @@ An ESP32-S3 traffic-light status lamp for Codex or other desktop tools. The firm
 | `idle` | green slow blink / 绿灯慢闪 | Waiting for the next instruction / 等待下一条指令 |
 | `thinking` | yellow slow blink / 黄灯慢闪 | Codex is reasoning / Codex 正在思考 |
 | `tool` | yellow fast blink / 黄灯快闪 | A tool or command is running / 正在调用工具或命令 |
-| `editing` | green/yellow chase / 绿黄追逐 | Codex is editing files / Codex 正在改文件 |
 | `git` | green+yellow blink / 绿黄同时闪 | Git or GitHub operation / Git 或 GitHub 操作 |
 | `running` | green/yellow/red chase / 绿黄红跑马灯 | A goal is progressing / 目标正在推进 |
 | `permission` | red fast blink / 红灯快闪 | Codex needs approval / Codex 需要你授权 |
@@ -21,9 +20,9 @@ An ESP32-S3 traffic-light status lamp for Codex or other desktop tools. The firm
 | `off` | all off / 全部关闭 | Disabled / 关闭状态灯 |
 | `test` | cycles all lights / 依次点亮所有灯 | Hardware check / 硬件测试 |
 
-`marquee` and `chase` are aliases for `running`.
+`marquee` and `chase` are aliases for `running`. `editing`, `edit`, and `write` are accepted for compatibility and use the same effect as `tool`.
 
-`marquee` 和 `chase` 是 `running` 的别名。
+`marquee` 和 `chase` 是 `running` 的别名。`editing`、`edit`、`write` 会作为兼容别名接收，灯效等同于 `tool`。
 
 ## Hardware / 硬件
 
@@ -105,7 +104,6 @@ After flashing, send commands from the repo root:
 .\codex_status_light.ps1 test -Port COM6
 .\codex_status_light.ps1 thinking -Port COM6
 .\codex_status_light.ps1 tool -Port COM6
-.\codex_status_light.ps1 editing -Port COM6
 .\codex_status_light.ps1 git -Port COM6
 .\codex_status_light.ps1 running -Port COM6
 .\codex_status_light.ps1 permission -Port COM6
@@ -155,10 +153,10 @@ Then trust the new or changed command hooks.
 | --- | --- |
 | `SessionStart` | `idle` |
 | `UserPromptSubmit` | `thinking` |
-| `PreToolUse` | `tool`, or `editing` / `git` when the hook input exposes that detail |
+| `PreToolUse` | `tool`, or `git` when the hook input exposes a Git/GitHub command |
 | `PostToolUse` | `thinking` |
 | `PermissionRequest` | `permission` |
-| `Stop` | keeps `thinking` while active, sends `limited` for usage/budget limits, otherwise `done` / 如果目标仍在执行则保持 `thinking`，达到使用/预算限制时发送 `limited`，否则切到 `done` |
+| `Stop` | sends `running` while an active goal continues, `limited` for usage/budget limits, otherwise `done` / 如果目标仍在执行则发送 `running` 跑马灯，达到使用/预算限制时发送 `limited`，否则切到 `done` |
 
 Git detection is best-effort. If Codex does not provide command text to the hook,
 Git operations fall back to the generic `tool` effect.
