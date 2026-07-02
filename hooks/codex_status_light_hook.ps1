@@ -1,5 +1,5 @@
 param(
-    [ValidateSet("idle", "thinking", "tool", "git", "done", "running", "permission", "limited", "error", "off", "stop")]
+    [ValidateSet("idle", "thinking", "tool", "git", "done", "running", "permission", "limited", "error", "off", "after_tool", "stop")]
     [string]$Status = "idle",
 
     [string]$SenderScript = (Join-Path (Split-Path $PSScriptRoot -Parent) "codex_status_light.ps1"),
@@ -104,6 +104,19 @@ if ($Status -eq "tool") {
     $hookInput = Read-HookInput
     $targetStatus = Resolve-ToolStatus -RawInput $hookInput
     Write-HookLog "tool event: target_status=$targetStatus input_length=$($hookInput.Length)"
+} elseif ($Status -eq "after_tool") {
+    $goalStatus = Get-LatestGoalStatus
+
+    switch ($goalStatus) {
+        "active" { $targetStatus = "running" }
+        "blocked" { $targetStatus = "error" }
+        "budget_limited" { $targetStatus = "limited" }
+        "usage_limited" { $targetStatus = "limited" }
+        "paused" { $targetStatus = "idle" }
+        default { $targetStatus = "thinking" }
+    }
+
+    Write-HookLog "after_tool event: latest_goal_status=$goalStatus target_status=$targetStatus"
 } elseif ($Status -eq "stop") {
     $goalStatus = Get-LatestGoalStatus
 

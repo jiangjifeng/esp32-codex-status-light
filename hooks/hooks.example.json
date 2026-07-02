@@ -61,10 +61,10 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"__REPO_PATH__\\hooks\\codex_status_light_hook.ps1\" thinking -SenderScript \"__REPO_PATH__\\codex_status_light.ps1\" -Port COM6",
-            "commandWindows": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"__REPO_PATH__\\hooks\\codex_status_light_hook.ps1\" thinking -SenderScript \"__REPO_PATH__\\codex_status_light.ps1\" -Port COM6",
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"__REPO_PATH__\\hooks\\codex_status_light_hook.ps1\" after_tool -SenderScript \"__REPO_PATH__\\codex_status_light.ps1\" -Port COM6",
+            "commandWindows": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"__REPO_PATH__\\hooks\\codex_status_light_hook.ps1\" after_tool -SenderScript \"__REPO_PATH__\\codex_status_light.ps1\" -Port COM6",
             "timeout": 5,
-            "statusMessage": "Setting Codex status light to thinking"
+            "statusMessage": "Updating Codex status light after tool"
           }
         ]
       }

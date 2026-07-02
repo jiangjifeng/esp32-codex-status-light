@@ -132,7 +132,11 @@ try {
     Assert-Status "gh command" (Invoke-Hook -Status "tool" -InputText '{"command":"gh pr view"}') "git"
 
     Set-GoalStatus "active"
+    Assert-Status "after tool active goal" (Invoke-Hook -Status "after_tool") "running"
     Assert-Status "active goal" (Invoke-Hook -Status "stop") "running"
+
+    Remove-Item -LiteralPath (Join-Path $fakeCodexHome "goals_1.sqlite") -Force
+    Assert-Status "after tool no goal db" (Invoke-Hook -Status "after_tool") "thinking"
 
     Set-GoalStatus "usage_limited"
     Assert-Status "usage limited" (Invoke-Hook -Status "stop") "limited"

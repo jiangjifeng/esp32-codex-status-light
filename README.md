@@ -154,7 +154,7 @@ Then trust the new or changed command hooks.
 | `SessionStart` | `idle` |
 | `UserPromptSubmit` | `thinking` |
 | `PreToolUse` | `tool`, or `git` when the hook input exposes a Git/GitHub command |
-| `PostToolUse` | `thinking` |
+| `PostToolUse` | `running` if an active goal continues, otherwise `thinking` / 如果目标仍在执行则发送 `running`，否则回到 `thinking` |
 | `PermissionRequest` | `permission` |
 | `Stop` | sends `running` while an active goal continues, `limited` for usage/budget limits, otherwise `done` / 如果目标仍在执行则发送 `running` 跑马灯，达到使用/预算限制时发送 `limited`，否则切到 `done` |
 

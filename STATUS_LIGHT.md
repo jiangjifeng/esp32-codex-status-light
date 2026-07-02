@@ -83,7 +83,7 @@ Hook mapping:
 | `SessionStart` | `idle` |
 | `UserPromptSubmit` | `thinking` |
 | `PreToolUse` | `tool`, auto-classified to `git` when possible |
-| `PostToolUse` | `thinking` |
+| `PostToolUse` | `running` if an active goal continues, otherwise `thinking` |
 | `PermissionRequest` | `permission` |
 | `Stop` | `running` if active, `limited` if usage/budget limited, otherwise `done` |
 
