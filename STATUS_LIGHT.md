@@ -102,6 +102,12 @@ The hook writes a small diagnostic log to:
 %TEMP%\codex_status_light_hook.log
 ```
 
+Test hook behavior without using the real serial port:
+
+```powershell
+.\scripts\test_codex_status_light_hook.ps1
+```
+
 ## GPIO Mapping
 
 If the wrong lamp turns on, update these macros in

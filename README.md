@@ -171,6 +171,14 @@ The hook writes diagnostics to:
 %TEMP%\codex_status_light_hook.log
 ```
 
+To verify hook behavior without using the real serial port:
+
+无需真实串口即可验证 hook 行为：
+
+```powershell
+.\scripts\test_codex_status_light_hook.ps1
+```
+
 更多细节见 [STATUS_LIGHT.md](STATUS_LIGHT.md)。
 
 More details are in [STATUS_LIGHT.md](STATUS_LIGHT.md).
